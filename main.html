@@ -3,124 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .button {
-            display: inline-block;
-            background-color: #0366d6;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .button:hover {
-            background-color: #024fa4;
-        }
-
-        .logout {
-            margin-top: 20px;
-        }
-
-        .logout .button {
-            background-color: #ff6347;
-        }
-
-        .logout .button:hover {
-            background-color: #e55342;
-        }
-    </style>
-</head>
-<body>
-    <div class="container" id="login-form">
-        <h1>Login</h1>
-        <div class="input-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter your username">
-        </div>
-        <div class="input-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password">
-        </div>
-        <button class="button" onclick="login()">Login</button>
-    </div>
-
-    <div class="container" id="logout-form" style="display: none;">
-        <h1>Welcome!</h1>
-        <p>You are logged in to the domain.</p>
-        <div class="logout">
-            <button class="button" onclick="logout()">Logout</button>
-        </div>
-    </div>
-
+    <title>File Browser with Authentication</title>
     <script>
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        let users = {};
+        let loggedInUser = null;
+
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
 
             if (username && password) {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('logout-form').style.display = 'block';
+                if (users[username]) {
+                    alert('Username already exists. Please choose another.');
+                } else {
+                    users[username] = password;
+                    alert('Registration successful!');
+                }
             } else {
-                alert('Please enter your username and password.');
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (users[username] && users[username] === password) {
+                loggedInUser = username;
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('fileManagerSection').style.display = 'block';
+                alert(`Welcome, ${username}!`);
+            } else {
+                alert('Invalid username or password.');
             }
         }
 
         function logout() {
-            document.getElementById('logout-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            loggedInUser = null;
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('fileManagerSection').style.display = 'none';
+            alert('You have been logged out.');
+        }
+
+        function createFolder() {
+            const folderName = document.getElementById('folderName').value;
+            if (folderName) {
+                const folderContainer = document.getElementById('folderContainer');
+                const folderDiv = document.createElement('div');
+                folderDiv.id = folderName;
+                folderDiv.className = 'folder';
+                folderDiv.innerHTML = `<strong>${folderName}</strong><ul></ul>`;
+                folderContainer.appendChild(folderDiv);
+                alert(`Folder '${folderName}' created successfully.`);
+            } else {
+                alert('Please enter a folder name.');
+            }
+        }
+
+        function deleteFolder() {
+            const folderName = document.getElementById('folderName').value;
+            const folderDiv = document.getElementById(folderName);
+            if (folderDiv) {
+                folderDiv.remove();
+                alert(`Folder '${folderName}' deleted successfully.`);
+            } else {
+                alert('Folder does not exist.');
+            }
+        }
+
+        function uploadFile() {
+            const folderName = document.getElementById('folderName').value;
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const folderDiv = document.getElementById(folderName);
+
+            if (!folderName) {
+                alert('Please enter a folder name.');
+                return;
+            }
+
+            if (!folderDiv) {
+                alert(`Folder '${folderName}' does not exist. Please create it first.`);
+                return;
+            }
+
+            if (file) {
+                const fileList = folderDiv.querySelector('ul');
+                const fileItem = document.createElement('li');
+                fileItem.textContent = file.name;
+                fileList.appendChild(fileItem);
+                alert(`File '${file.name}' uploaded to folder '${folderName}' successfully.`);
+            } else {
+                alert('Please select a file to upload.');
+            }
         }
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h1, h2 {
+            color: #1b5e20;
+        }
+
+        .folder {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #388e3c;
+            border-radius: 5px;
+            background-color: #c8e6c9;
+        }
+
+        button {
+            background-color: #66bb6a;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #66bb6a;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        #fileManagerSection {
+            display: none;
+        }
+
+        .logout-btn {
+            display: block;
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>File Browser with Authentication</h1>
+
+        <div id="authSection">
+            <h2>Register</h2>
+            <input type="text" id="registerUsername" placeholder="Username">
+            <input type="password" id="registerPassword" placeholder="Password">
+            <button onclick="register()">Register</button>
+
+            <h2>Login</h2>
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div id="fileManagerSection">
+            <h2>Welcome to the File Manager</h2>
+
+            <label for="folderName">Folder Name:</label>
+            <input type="text" id="folderName" placeholder="Enter folder name">
+            <br><br>
+
+            <button onclick="createFolder()">Create Folder</button>
+            <button onclick="deleteFolder()">Delete Folder</button>
+            <br><br>
+
+            <label for="fileInput">Upload File:</label>
+            <input type="file" id="fileInput">
+            <br><br>
+
+            <button onclick="uploadFile()">Upload File</button>
+
+            <div class="logout-btn">
+                <button onclick="logout()">Log Out</button>
+            </div>
+
+            <h2>Folders:</h2>
+            <div id="folderContainer"></div>
+        </div>
+    </div>
 </body>
 </html>
