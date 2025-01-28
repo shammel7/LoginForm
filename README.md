@@ -1,104 +1,178 @@
-# LoginForm
-
+#LOGIN FORM
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Name Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Step Process</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
 
-        .container {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            text-align: center;
-        }
+    .container {
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
+      display: none;
+    }
 
-        h1 {
-            color: #333;
-        }
+    .signin-container {
+      background: #9b4dca; /* Purple */
+    }
 
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+    .create-account-container {
+      background: #87cefa; /* Sky Blue */
+    }
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background-color: #918e91;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+    .login-container {
+      background: #9e9e4f; /* Yellow-Green */
+    }
 
-        button:hover {
-            background-color: #7a757a;
-        }
+    .folder-container {
+      background: #ffcc80; /* Light Orange */
+    }
 
-        .hidden {
-            display: none;
-        }
-    </style>
+    .logout-container {
+      background: #b0b0b0; /* Ash Gray */
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      background: #5e35b1;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #4527a0;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+  <script>
+    // Helper function to show the correct container
+    function showContainer(containerId) {
+      const containers = document.querySelectorAll('.container');
+      containers.forEach(container => container.classList.add('hidden'));
+      document.getElementById(containerId).classList.remove('hidden');
+    }
+
+    // Step 1: Show Create Account after Sign In
+    function handleSignIn(event) {
+      event.preventDefault(); // Prevent form submission
+      console.log("Sign In Submitted");
+      showContainer('create-account-container');
+    }
+
+    // Step 2: Show Login after Account Creation
+    function handleCreateAccount(event) {
+      event.preventDefault();
+      console.log("Create Account Submitted");
+      showContainer('login-container');
+    }
+
+    // Step 3: Show Folder Management after Login
+    function handleLogin(event) {
+      event.preventDefault();
+      console.log("Login Submitted");
+      showContainer('folder-container');
+    }
+
+    // Step 4: Show Logout after Folder Management
+    function handleFileUpload(event) {
+      event.preventDefault();
+      console.log("File Upload Clicked");
+      showContainer('logout-container');
+    }
+
+    // Step 5: Log out and show Sign In again
+    function handleLogout(event) {
+      event.preventDefault();
+      console.log("Logged out");
+      showContainer('signin-container');
+    }
+
+    // Set the initial container (Sign In)
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("Page Loaded");
+      showContainer('signin-container');
+    });
+  </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        <div id="login-form">
-            <input type="text" id="username" placeholder="Enter Username" required>
-            <input type="password" id="password" placeholder="Enter Password" required>
-            <button id="login-btn">Login</button>
-        </div>
 
-        <div id="welcome-message" class="hidden">
-            <h2>Welcome, <span id="user-display"></span>!</h2>
-            <button id="logout-btn">Logout</button>
-        </div>
-    </div>
+  <!-- Sign-In Page -->
+  <div id="signin-container" class="container signin-container">
+    <h1>Sign In</h1>
+    <form onsubmit="handleSignIn(event)">
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Sign In</button>
+    </form>
+  </div>
 
-    <script>
-        const loginForm = document.getElementById('login-form');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const loginBtn = document.getElementById('login-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const userDisplay = document.getElementById('user-display');
+  <!-- Create Account Page -->
+  <div id="create-account-container" class="container create-account-container">
+    <h1>Create Account</h1>
+    <form onsubmit="handleCreateAccount(event)">
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <input type="password" placeholder="Confirm Password" required>
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
 
-        loginBtn.addEventListener('click', () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+  <!-- Login Page -->
+  <div id="login-container" class="container login-container">
+    <h1>Log In</h1>
+    <form onsubmit="handleLogin(event)">
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
 
-            if (username && password) {
-                userDisplay.textContent = username;
-                loginForm.classList.add('hidden');
-                welcomeMessage.classList.remove('hidden');
-            } else {
-                alert('Please enter both username and password!');
-            }
-        });
+  <!-- Folder Management Page -->
+  <div id="folder-container" class="container folder-container">
+    <h1>Manage Files</h1>
+    <p>Create, upload, and delete files.</p>
+    <button onclick="handleFileUpload(event)">Upload File</button>
+    <button>Delete File</button>
+    <button onclick="handleLogout(event)">Log Out</button>
+  </div>
 
-        logoutBtn.addEventListener('click', () => {
-            loginForm.classList.remove('hidden');
-            welcomeMessage.classList.add('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        });
-    </script>
+  <!-- Logout Page -->
+  <div id="logout-container" class="container logout-container">
+    <h1>Logged Out</h1>
+    <p>You have been logged out.</p>
+    <button onclick="handleLogout(event)">Log In Again</button>
+  </div>
+
 </body>
 </html>
